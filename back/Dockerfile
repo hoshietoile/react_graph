@@ -4,6 +4,8 @@ WORkDIR /app
 
 RUN apk add git
 
+RUN yarn install
+
 RUN npm i -g @nestjs/cli
 
-CMD ["yarn", "start:dev"]
+# CMD ["yarn", "start:dev"]

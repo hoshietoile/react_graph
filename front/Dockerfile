@@ -4,4 +4,6 @@ WORkDIR /app
 
 RUN apk add git
 
-CMD ["yarn", "dev"]
+RUN yarn install
+
+# CMD ["yarn", "dev"]

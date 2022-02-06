@@ -5,6 +5,7 @@ import Loading from '@atoms/Loading/Loading';
 import Table from '@molecules/Table/Table';
 import './UserEdit.css';
 import UserModal from './UserModal';
+import { useLoginStore } from './../../../store/loginStore'
 
 // formik, yup
 // https://qiita.com/SLEAZOIDS/items/e33f81bfa163592578d9
@@ -19,6 +20,11 @@ interface IUserTableRow {
 }
 
 const UserEdit: React.FC<UserEditProps> = ({ }) => {
+  const {
+    loginInfo,
+    setLoginState,
+  } = useLoginStore();
+
   const [createUserQuery, { loading: ucLoading, data: ucRes }] = useCreateUserMutation();
   const { loading, data, refetch } = useUsersQuery({
     variables: {
@@ -64,6 +70,17 @@ const UserEdit: React.FC<UserEditProps> = ({ }) => {
     }
   }
 
+  // TODO: Simplify
+  type InputInterface = HTMLInputElement | HTMLSelectElement;
+  type EV<T extends InputInterface> = React.ChangeEvent<T>;
+  const unwrapEv = (event: EV<InputInterface>) => {
+    return event?.target?.value ?? '';
+  }
+
+  const onInput = (e: EV<HTMLInputElement>) => {
+    setLoginState({ ...loginInfo, loginName: unwrapEv(e) })
+  }
+
   return (<>
     <Loading isLoading={loading || ucLoading} />
     {isShowModal && <UserModal
@@ -75,6 +92,10 @@ const UserEdit: React.FC<UserEditProps> = ({ }) => {
       handleClickCreate={createUser}
     />}
     <Card classes="d-flex column">
+      <label htmlFor="">Name</label>
+      <input type="text" value={loginInfo.loginName} onChange={onInput} />
+      <div>{loginInfo.loginId}</div>
+      <div>{loginInfo.loginName}</div>
       <div className="d-flex">
         <div className="spacer"></div>
         <button className="btn btn-primary" onClick={openModal}>AddNewUser</button>
